@@ -1,0 +1,17 @@
+{
+  "name": "eNotepadFunctions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "李云鹏",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "crypto-js": "^4.1.1",
+    "nanoid": "^3.1.25",
+    "wx-server-sdk": "~2.4.0"
+  }
+}
