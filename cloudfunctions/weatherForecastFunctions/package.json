@@ -1,0 +1,19 @@
+{
+    "name": "weatherForcastFunctions",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.21.4",
+        "crypto": "^1.0.1",
+        "got": "^11.8.2",
+        "query-string": "^7.0.1",
+        "url": "^0.11.0",
+        "wx-server-sdk": "~2.5.3"
+    }
+}

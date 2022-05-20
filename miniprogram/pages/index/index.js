@@ -1,142 +1,99 @@
-//index.js
-const app = getApp()
-const { envList } = require('../../envList.js')
+// pages/index/index.js
+const actions = require('../../libs/redux/actions');
+const app = getApp();
+const db = app.wxp.cloud.database();
+const PRODUCT_ID = "P7LC2D28JI";
+const DEVICE_NAME = "notepad_1";
+const TOTAL_SEGMENTS = 2;
 
 Page({
-  data: {
-    showUploadTip: false,
-    powerList: [{
-      title: '云函数',
-      tip: '安全、免鉴权运行业务代码',
-      showItem: false,
-      item: [{
-        title: '获取OpenId',
-        page: 'getOpenId'
-      },
-      //  {
-      //   title: '微信支付'
-      // },
-       {
-        title: '生成小程序码',
-        page: 'getMiniProgramCode'
-      },
-      // {
-      //   title: '发送订阅消息',
-      // }
-    ]
-    }, {
-      title: '数据库',
-      tip: '安全稳定的文档型数据库',
-      showItem: false,
-      item: [{
-        title: '创建集合',
-        page: 'createCollection'
-      }, {
-        title: '更新记录',
-        page: 'updateRecord'
-      }, {
-        title: '查询记录',
-        page: 'selectRecord'
-      }, {
-        title: '聚合操作',
-        page: 'sumRecord'
-      }]
-    }, {
-      title: '云存储',
-      tip: '自带CDN加速文件存储',
-      showItem: false,
-      item: [{
-        title: '上传文件',
-        page: 'uploadFile'
-      }]
-    }, {
-      title: '云托管',
-      tip: '不限语言的全托管容器服务',
-      showItem: false,
-      item: [{
-        title: '部署服务',
-        page: 'deployService'
-      }]
-    }],
-    envList,
-    selectedEnv: envList[0],
-    haveCreateCollection: false
-  },
 
-  onClickPowerInfo(e) {
-    const index = e.currentTarget.dataset.index
-    const powerList = this.data.powerList
-    powerList[index].showItem = !powerList[index].showItem
-    if (powerList[index].title === '数据库' && !this.data.haveCreateCollection) {
-      this.onClickDatabase(powerList)
-    } else {
-      this.setData({
-        powerList
-      })
-    }
-  },
+    /**
+     * 页面的初始数据
+     */
+    data: {
+        samples: []
+    },
 
-  onChangeShowEnvChoose() {
-    wx.showActionSheet({
-      itemList: this.data.envList.map(i => i.alias),
-      success: (res) => {
-        this.onChangeSelectedEnv(res.tapIndex)
-      },
-      fail (res) {
-        console.log(res.errMsg)
-      }
-    })
-  },
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad: function (options) {
+        db.collection("_action")
+            .orderBy('createTime', 'desc')
+            .limit(1)
+            .where({
+                // 填入当前用户 openid，或如果使用了安全规则，则 {openid} 即代表当前用户 openid
+                _openid: '{openid}'
+            })
+            .watch({
+                onChange: function (snapshot) {
+                    console.log('index.js ==> snapshot', snapshot)
+                    const { docChanges } = snapshot;
+                    const { dataType = "", queueType = "", updatedFields = {} } = docChanges[0];
+                    if (dataType === "update" && queueType === "update") {
+                        app.wxp.hideLoading();
+                    }
+                },
+                onError: function (err) {
+                    console.error('the watch closed because of error', err)
+                }
+            })
+    },
 
-  onChangeSelectedEnv(index) {
-    if (this.data.selectedEnv.envId === this.data.envList[index].envId) {
-      return
-    }
-    const powerList = this.data.powerList
-    powerList.forEach(i => {
-      i.showItem = false
-    })
-    this.setData({
-      selectedEnv: this.data.envList[index],
-      powerList,
-      haveCreateCollection: false
-    })
-  },
-
-  jumpPage(e) {
-    wx.navigateTo({
-      url: `/pages/${e.currentTarget.dataset.page}/index?envId=${this.data.selectedEnv.envId}`,
-    })
-  },
-
-  onClickDatabase(powerList) {
-    wx.showLoading({
-      title: '',
-    })
-    wx.cloud.callFunction({
-      name: 'quickstartFunctions',
-      config: {
-        env: this.data.selectedEnv.envId
-      },
-      data: {
-        type: 'createCollection'
-      }
-    }).then((resp) => {
-      if (resp.result.success) {
-        this.setData({
-          haveCreateCollection: true
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady: function () {
+        wx.showTabBar({
+            animation: true,
         })
-      }
-      this.setData({
-        powerList
-      })
-      wx.hideLoading()
-    }).catch((e) => {
-      console.log(e)
-      this.setData({
-        showUploadTip: true
-      })
-      wx.hideLoading()
-    })
-  }
+            .then(res => {
+                console.log(res)
+            })
+    },
+
+    onCellTap: async function (evt) {
+        app.wxp.showLoading({ title: "更新中", mask: true });
+
+        const deviceModelId = evt.currentTarget.dataset.scenario;
+        const { _id, errMsg } = await this.insertActionRecord(deviceModelId, false, "INIT");
+        if (errMsg !== "collection.add:ok") return;
+
+        let inputParams = {
+            totalSegments: TOTAL_SEGMENTS,
+            actionId: deviceModelId,
+            token: _id
+        }
+        if (deviceModelId === "ACTION_CHANGE_WALLPAPER"
+            || deviceModelId === "ACTION_BOOK_ABSTRACTS") {
+            inputParams = { ...inputParams, resourceId: "random" }
+        }
+
+        console.log(inputParams)
+        await this.sendDeviceAction(inputParams).catch(err => {
+            app.wxp.hideLoading();
+            throw err;
+        })
+    },
+
+    insertActionRecord: async (deviceModelId, response, result) => {
+        return await db.collection("_action")
+            .add({
+                data: {
+                    deviceModelId,
+                    response,
+                    result,
+                    "createTime": db.serverDate()
+                }
+            })
+    },
+
+    sendDeviceAction: async (inputParams) => {
+        return await actions.sendDeviceAction({
+            ProductId: PRODUCT_ID,
+            DeviceName: DEVICE_NAME,
+        }, inputParams)
+    }
+
 })

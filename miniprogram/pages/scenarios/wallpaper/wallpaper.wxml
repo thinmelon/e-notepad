@@ -1,0 +1,4 @@
+<!--pages/scenarios/wallpaper/wallpaper.wxml-->
+<!-- <view wx:for="{{samples}}" wx:key="_id" bindtap="onSampleItemTap" data-imageid="{{item._id}}">
+    <image src="{{item.fileID}}" lazy-load="true" mode="aspectFit" />
+</view> -->

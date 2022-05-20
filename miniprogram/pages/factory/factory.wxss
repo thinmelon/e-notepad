@@ -1,0 +1,12 @@
+/* pages/factory/factory.wxss */
+.container {
+    padding: 60rpx 50rpx 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.text {
+    padding: 60rpx 50rpx;
+}

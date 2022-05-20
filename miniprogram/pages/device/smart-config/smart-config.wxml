@@ -1,0 +1,2 @@
+<!--pages/device/smart-config/smart-config.wxml-->
+<wifi-conf title="SmartConfig 配网" pluginName="wifiConfSmartConfig" errorTips="{{errorTips}}" />

@@ -9,9 +9,9 @@
   "author": "李云鹏",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.4",
-    "crypto-js": "^4.1.1",
-    "nanoid": "^3.1.25",
+    "axios": "^0.22.0",
+    "crypto": "^1.0.1",
+    "moment": "^2.29.1",
     "wx-server-sdk": "~2.4.0"
   }
 }

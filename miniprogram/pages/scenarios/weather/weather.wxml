@@ -1,0 +1,10 @@
+<!--pages/scenarios/weather/weather.wxml-->
+<view class="section">
+    <view class="section__title">天气预报</view>
+    <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange"
+        value="{{multiIndex}}" range="{{objectMultiArray}}" range-key="value">
+        <view class="picker">
+            当前城市：{{objectMultiArray[0][multiIndex[0]].value}}，{{objectMultiArray[1][multiIndex[1]].value}}
+        </view>
+    </picker>
+</view>

@@ -1,0 +1,2 @@
+/* components/wifi-conf/wifi-conf.wxss */
+@import '../common.wxss';

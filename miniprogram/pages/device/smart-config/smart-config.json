@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "wifi-conf": "/components/wifi-conf/wifi-conf"
+  }
+}

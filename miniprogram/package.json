@@ -13,7 +13,12 @@
   "author": "李云鹏",
   "license": "ISC",
   "dependencies": {
+    "miniprogram-api-promise": "^1.0.4",
     "moment": "^2.29.1",
-    "qcloud-iotexplorer-appdev-sdk": "^1.1.15"
+    "qcloud-iotexplorer-appdev-plugin-wificonf-core": "^1.1.18",
+    "qcloud-iotexplorer-appdev-plugin-wificonf-smartconfig": "^1.1.16",
+    "qcloud-iotexplorer-appdev-sdk": "^1.1.15",
+    "url-parse": "^1.5.3",
+    "weui-miniprogram": "^1.1.1"
   }
 }

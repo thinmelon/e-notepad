@@ -1,0 +1,9 @@
+<!--pages/factory/factory.wxml-->
+<view class="container">
+    <view>
+        <text class="text">状态：</text>
+        <switch checked="{{properties.PROPERTY_MACHINE_STATUS}}" bindchange="onSwitch1Change" />
+    </view>
+    <text class="text">裁切次数：{{properties.PROPERTY_OP_COUNT}}</text>
+    <button type="warn" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}" disabled="{{disabled}}" bindtap="onButtonTap"> 重置 </button>
+</view>

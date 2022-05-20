@@ -1,0 +1,57 @@
+<!--pages/device/index/index.wxml-->
+<template name="device-list">
+    <view class="device-item need-hover" wx:for="{{deviceList}}" wx:key="DeviceId" bindtap="onTapItem"
+        data-item="{{item}}" hover-start-time="20" hover-stay-time="70" hover-class="hover">
+        <view class="item-content">
+            <view class="item-logo">
+                <image class="item-logo-image"
+                    src="{{item.IconUrl || 'https://main.qcloudimg.com/raw/b2c6d08f0a49a7d9f6ebdc0d3347153f/icon-default.jpg'}}" />
+            </view>
+            <view class="item-body">
+                <view class="item-name">{{item.AliasName}}</view>
+                <view class="item-status status-online" wx:if="{{item.DeviceName === '~virtualDev'}}">虚拟设备</view>
+                <view class="item-status status-online" wx:elif="{{item.NetType === 'ble'}}">蓝牙设备</view>
+                <view class="item-status status-online" wx:elif="{{item.NetType === 'lorawan'}}">LoRa 设备</view>
+                <view class="item-status status-{{deviceStatusMap[item.DeviceId] === 1 ? 'online' : 'offline'}}"
+                    wx:else>{{deviceStatusMap[item.DeviceId] === 1 ? '在线' : '离线'}}</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<page-wrapper bind:loginready="onLoginReady">
+    <view class="container">
+        <view class="page-title">
+            <view>我的设备</view>
+            <!-- <view class="float-add-device-btn need-hover" hover-start-time="20" hover-stay-time="70" hover-class="hover"
+                bindtap="showAddDeviceMenu" wx:if="{{!inited || (deviceList.length + shareDeviceList.length > 0)}}"> -->
+            <view class="float-add-device-btn need-hover" hover-start-time="20" hover-stay-time="70" hover-class="hover"
+                bindtap="showAddDeviceMenu" wx:if="{{!inited || (deviceList.length > 0)}}">
+                <image class="float-add-device-btn-icon" src="../../../images/common/plus-blue.svg" />
+            </view>
+        </view>
+        <view class="page-main">
+            <view class="device-list-loading" wx:if="{{!inited}}">
+                <mp-loading type="circle"></mp-loading>
+            </view>
+            <!-- <view class="empty-device-list" wx:elif="{{deviceList.length === 0 && shareDeviceList.length === 0}}"> -->
+            <view class="empty-device-list" wx:elif="{{deviceList.length === 0}}">
+                <view class="empty-device-list-desc">暂无设备</view>
+                <single-button text="添加设备" type="primary" bind:click="showAddDeviceMenu" />
+                <!-- <single-button text="添加标准蓝牙设备" type="primary" bind:click="addBleDevice" style="margin-top: 10px;" /> -->
+            </view>
+            <block wx:else>
+                <view class="device-list" wx:if="{{deviceList.length}}" bindtap="onItemTap" >
+                    <template is="device-list" data="{{deviceList, deviceStatusMap}}" bindtap="onItemTap" />
+                </view>
+
+                <!-- <view class="share-device-list" wx:if="{{shareDeviceList.length > 0}}">
+                    <view class="share-device-list-title">分享的设备</view>
+                    <template is="device-list" data="{{deviceList: shareDeviceList, deviceStatusMap}}" />
+                </view> -->
+            </block>
+
+            <view class="debug-userid">用户 ID: <text user-select>{{userId}}</text></view>
+        </view>
+    </view>
+</page-wrapper>

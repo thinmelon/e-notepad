@@ -76,3 +76,7 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+# vscode custom theme - azemoh.one-monokai
+.vscode
+.DS_Store
